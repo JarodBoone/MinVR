@@ -15,7 +15,7 @@ void *get_in_addr2(struct sockaddr *sa) {
 
 VRNetClient::VRNetClient(const std::string &serverIP, const std::string &serverPort)
 {
-	printf("client: connecting...\n");
+	///////////////////////////////////////////////////////printf("client: connecting...\n");
 #ifdef WIN32  // WinSock implementation
 
   WSADATA wsaData;
@@ -161,11 +161,8 @@ VRNetClient::syncEventDataAcrossAllNodes(VRDataQueue::serialData eventData) {
   // 1. send inputEvents to server
   sendEventData(_socketFD, eventData);
 
-  printf("Client %d Waiting for event data\n",_socketFD);
   // 2. receive all events from the server
   VRDataQueue::serialData allEvents = waitForAndReceiveEventData(_socketFD);
-
-  printf("%d Recieve \n",_socketFD);
 
   return allEvents;
 }

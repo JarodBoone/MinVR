@@ -20,21 +20,33 @@ extern "C" {
 }
 
 #define PORT "3490"
-#define NUMCLIENTS 10
+#define NUMCLIENTS 1
 
 int tasks[NUMCLIENTS];
 
 void *ls(void *blank){
-        printf("Launch Server\n"); 
+        //printf("Launch Server\n"); 
         //launch server on port 
         MinVR::VRNetServer server = MinVR::VRNetServer(PORT,NUMCLIENTS);
         printf("Server filled connections: Status OK\n"); 
 
-        sleep(10); 
-        MinVR::VRDataQueue::serialData eventData = server.syncEventDataAcrossAllNodes("a");
+        //MinVR::VRDataQueue::serialData d = "<VRDataQueue num = \"1\" >eggs</ VRDataQueue>";
 
-        printf("sync event data\n");
-    
+        //MinVR::VRDataQueue::serialData d = "why tho";
+
+        MinVR::VRDataQueue::serialData r = server.syncEventDataAcrossAllNodes("abcd");
+        printf("Finished Server event data request \n");
+     /*    server.syncSwapBuffersAcrossAllNodes();
+        server.syncSwapBuffersAcrossAllNodes();
+        server.syncSwapBuffersAcrossAllNodes();
+        server.syncSwapBuffersAcrossAllNodes();
+        server.syncSwapBuffersAcrossAllNodes();
+        server.syncSwapBuffersAcrossAllNodes();
+        server.syncSwapBuffersAcrossAllNodes();
+        server.syncSwapBuffersAcrossAllNodes(); */
+
+        //std::cout << "SERVER DATA: " << d << std::endl; 
+
         pthread_exit(NULL);
     
 }
@@ -44,21 +56,25 @@ void *lc(void *blank){
     long r = random();
     MinVR::VRNetClient client = MinVR::VRNetClient("127.0.0.1", PORT);
 
-    sleep(10); 
-
-    pthread_t my_id = pthread_self();
-
-    //printf("%ld\n",r); 
-    if (!(r % 3)){
-        sleep(2); 
-    }
-
-    printf("=================SSED CLIENT %d=====================\n");
-
-    MinVR::VRDataQueue::serialData eventData = client.syncEventDataAcrossAllNodes("a"); 
+    // //printf("%ld\n",r); 
+    // if (!(r % 3)){
+    //     sleep(2); 
+    // }
+    //MinVR::VRDataQueue::serialData d = "<VRDataQueue num = \"2\" >doubleback</ VRDataQueue>";
+    MinVR::VRDataQueue::serialData c = client.syncEventDataAcrossAllNodes("abcd");
+    printf("Finished Client event data req\n");
     
-	//std::cout << "lc: SYNC SWAP BUFFERS REQUEST" << std::endl;
-	//client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+    // client.syncSwapBuffersAcrossAllNodes();
+
+    // std::cout << "CLIENT DATA: "<< c << std::endl;
+ 
 	pthread_exit(NULL); 
 }
 
@@ -108,13 +124,12 @@ int main(int argc,char* argv[]){
     }
 
     pthread_attr_destroy(&ct_attr); 
+    // pthread_join(); 
        
     //MinVR::VRNetServer server = MinVR::VRNetServer(PORT,NUMCLIENTS);
 
     void *rs;
     //pthread_join(cids[0],&rs);
-    printf("Main Thread continuing\n");
-
     pthread_exit(NULL); 
 
     printf("did we exit?"); 
